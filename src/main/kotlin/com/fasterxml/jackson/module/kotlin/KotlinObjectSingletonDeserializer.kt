@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.BeanProperty
 import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.JsonDeserializer
+import com.fasterxml.jackson.databind.jsontype.TypeDeserializer
 
 internal fun JsonDeserializer<*>.asSingletonDeserializer(singleton: Any) =
         KotlinObjectSingletonDeserializer(singleton, this)
@@ -24,6 +25,11 @@ internal class KotlinObjectSingletonDeserializer(
 
     override fun deserialize(p: JsonParser, ctxt: DeserializationContext): Any {
         defaultDeserializer.deserialize(p, ctxt)
+        return singletonInstance
+    }
+
+    override fun deserializeWithType(p: JsonParser, ctxt: DeserializationContext, typeDeserializer: TypeDeserializer): Any {
+        defaultDeserializer.deserializeWithType(p, ctxt, typeDeserializer)
         return singletonInstance
     }
 }
